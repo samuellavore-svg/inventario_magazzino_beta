@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101e31">
+<title>Inventario Padre Pio — Beta</title>
+<style>
+:root{font-family:system-ui,Arial,sans-serif;color-scheme:dark;background:#0b1424;color:#e8f1ff}
+*{box-sizing:border-box}
+body{margin:0}
+header{background:#101e31;border-bottom:1px solid #344963;padding:20px}
+main{max-width:1150px;margin:auto;padding:18px 14px 70px}
+h1{margin:5px 0;font-size:25px}
+h2{font-size:19px}
+h3{font-size:16px}
+small,.muted{color:#aabbd3}
+button,input,select{font:inherit;border:1px solid #38516f;border-radius:9px;padding:10px;background:#172c47;color:#edf4ff}
+button{cursor:pointer}
+button:hover{background:#294b73}
+input,select{max-width:100%}
+button.primary{background:#326ba9}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.card{background:#14253d;border:1px solid #2e4564;border-radius:14px;margin:12px 0;overflow:hidden}
+.pad{padding:14px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{padding:15px;background:#192f4c;border-radius:12px;text-align:center}
+.stat b{display:block;font-size:28px;margin:5px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}
+.tabs button.active{background:#3979bd}
+.hidden{display:none!important}
+details{border:1px solid #304761;border-radius:11px;margin:8px 0;background:#112138}
+summary{padding:13px;cursor:pointer;font-weight:650}
+.details{padding:10px;border-top:1px solid #304761}
+.item{padding:10px;border-bottom:1px solid #304761}
+.chip{display:inline-block;padding:3px 8px;background:#284568;border-radius:8px;font-size:12px}
+.good{color:#85e3b4}
+.warn{color:#ffd17a}
+.danger{color:#ff9aa8}
+.qty{display:flex;gap:9px;align-items:center}
+.qty button{min-width:38px;font-size:18px}
+.full{width:100%;margin:8px 0}
+table{width:100%;border-collapse:collapse}
+td,th{text-align:left;padding:10px;border-bottom:1px solid #304761}
+.scroll{overflow:auto}
+.notice{padding:11px;border:1px solid #826b36;border-radius:10px;color:#ffe0a0}
+body.desktop main{max-width:1500px}
+body.desktop .inventory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:650px){
+.grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stat{padding:9px 4px}
+.stat b{font-size:23px}
+body.desktop main{min-width:920px}
+body.desktop{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="row">
+<div>
+<small>ONORANZE FUNEBRI PADRE PIO · BETA</small>
+<h1>Gestione magazzino</h1>
+<small>Versione dimostrativa indipendente</small>
+</div>
+<button onclick="toggleView()" id="viewButton">Vista desktop</button>
+</div>
+</header>
+<main>
+<p class="notice">AMBIENTE DI PROVA: i dati sono inventati. Nessun collegamento al magazzino ufficiale.</p>
+<div class="grid">
+<div class="stat"><small>Materiali</small><b id="total">0</b></div>
+<div class="stat"><small>Da ordinare</small><b id="low">0</b></div>
+<div class="stat"><small>Esauriti</small><b id="empty">0</b></div>
+</div>
+<nav class="tabs">
+<button onclick="tab('inventory')" id="tab-inventory">Inventario</button>
+<button onclick="tab('orders')" id="tab-orders">Ordini</button>
+<button onclick="tab('service')" id="tab-service">Scarico servizio</button>
+<button onclick="tab('history')" id="tab-history">Statistiche</button>
+</nav>
+
+<section id="inventory">
+<div class="row">
+<h2>Inventario</h2>
+<button onclick="addMaterial()">+ Materiale</button>
+</div>
+<input class="full" id="search" placeholder="Cerca materiale, colore o categoria" oninput="render()">
+<select id="filter" class="full" onchange="render()">
+<option value="all">Tutti i materiali</option>
+<option value="low">Da ordinare</option>
+<option value="empty">Esauriti</option>
+<option value="ok">Disponibili</option>
+</select>
+<div id="inventoryRows" class="inventory"></div>
+</section>
+
+<section id="orders" class="hidden">
+<h2>Riepilogo ordini</h2>
+<p class="muted">Le categorie e i materiali sono espandibili.</p>
+<div id="orderRows"></div>
+<button onclick="exportOrders()">Esporta ordini CSV</button>
+</section>
+
+<section id="service" class="hidden">
+<h2>Scarico materiali per servizio</h2>
+<p class="muted">Seleziona più materiali e registra un unico prelievo.</p>
+<input id="serviceName" class="full" placeholder="Riferimento servizio (facoltativo)">
+<div id="serviceRows" class="card pad"></div>
+<button class="primary full" onclick="completeService()">Conferma scarico servizio</button>
+</section>
+
+<section id="history" class="hidden">
+<h2>Statistiche dei consumi</h2>
+<div id="historyStats"></div>
+<h3>Materiali più utilizzati</h3>
+<div id="ranking"></div>
+<h3>Ultimi movimenti</h3>
+<div id="movements"></div>
+<button onclick="exportHistory()">Esporta storico CSV</button>
+</section>
+
+<details class="card">
+<summary>Impostazioni e backup</summary>
+<div class="pad">
+<button onclick="exportBackup()">Esporta dati beta JSON</button>
+<button onclick="document.getElementById('importFile').click()">Importa dati beta JSON</button>
+<input type="file" id="importFile" accept=".json" hidden onchange="importBackup(event)">
+<button onclick="resetDemo()">Ripristina dati dimostrativi</button>
+</div>
+</details>
+</main>
+
+<script>
+const initial=[
+{id:"m1",category:"CASSE",sub:"Classiche",name:"Cassa Roma",color:"Noce",variant:"Standard",qty:2,min:5,unit:"pz"},
+{id:"m2",category:"CASSE",sub:"Classiche",name:"Cassa Roma",color:"Bianco",variant:"Standard",qty:7,min:4,unit:"pz"},
+{id:"m3",category:"CASSE",sub:"Pregiate",name:"Cassa Milano",color:"Rovere",variant:"Lusso",qty:0,min:2,unit:"pz"},
+{id:"m4",category:"ACCESSORI",sub:"Maniglie",name:"Maniglie ottone",color:"Oro",variant:"Set",qty:4,min:8,unit:"set"},
+{id:"m5",category:"ACCESSORI",sub:"Croci",name:"Croce decorativa",color:"Argento",variant:"Piccola",qty:12,min:5,unit:"pz"},
+{id:"m6",category:"TESSUTI",sub:"Imbottiture",name:"Imbottitura interna",color:"Bianco",variant:"Standard",qty:3,min:6,unit:"pz"},
+{id:"m7",category:"TESSUTI",sub:"Imbottiture",name:"Imbottitura interna",color:"Avorio",variant:"Standard",qty:9,min:4,unit:"pz"},
+{id:"m8",category:"TESSUTI",sub:"Rivestimenti",name:"Velo",color:"Nero",variant:"Classico",qty:0,min:3,unit:"pz"}
+];
+const clone=x=>JSON.parse(JSON.stringify(x));
+let state;
+try{state=JSON.parse(localStorage.getItem("padrepio_beta_v1"))}catch(e){}
+if(!state||!Array.isArray(state.items))state={items:clone(initial),history:[],orders:{}};
+state.history ||= [];
+state.orders ||= {};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num=n=>Math.max(0,Math.floor(Number(n)||0));
+const low=x=>x.qty<x.min;
+const sort=(a,b)=>String(a).localeCompare(String(b),"it",{sensitivity:"base"});
+const uid=()=>crypto.randomUUID();
+function save(){localStorage.setItem("padrepio_beta_v1",JSON.stringify(state));render()}
+function categories(){return [...new Set(state.items.map(x=>x.category))].sort(sort)}
+function grouped(rows,key){const map=new Map();rows.forEach(x=>{const k=key(x);if(!map.has(k))map.set(k,[]);map.get(k).push(x)});return [...map.entries()].sort((a,b)=>sort(a[0],b[0]))}
+function tab(t){
+["inventory","orders","service","history"].forEach(k=>{
+$(k).classList.toggle("hidden",k!==t);
+$("tab-"+k).classList.toggle("active",k===t)
+});
+render()
+}
+function toggleView(){
+document.body.classList.toggle("desktop");
+$("viewButton").textContent=document.body.classList.contains("desktop")?"Vista telefono":"Vista desktop"
+}
+function status(x){return x.qty===0?"<span class='danger'>Esaurito</span>":low(x)?"<span class='warn'>Da ordinare</span>":"<span class='good'>Disponibile</span>"}
+function preserve(id,html){
+const root=$(id);
+const opened=new Set([...root.querySelectorAll("details[open]")].map(d=>d.dataset.key));
+root.innerHTML=html;
+root.querySelectorAll("details").forEach(d=>{if(opened.has(d.dataset.key))d.open=true})
+}
+function materialCard(x){
+return `<div class="item">
+<div class="row">
+<div><b>${esc(x.name)}</b> <span class="chip">${esc(x.color)}</span> <span class="chip">${esc(x.variant)}</span><br>
+<small>${status(x)} · Minimo ${num(x.min)} ${esc(x.unit)}</small></div>
+<div class="qty">
+<button onclick="adjust('${x.id}',-1)">−</button>
+<b>${num(x.qty)}</b>
+<button onclick="adjust('${x.id}',1)">+</button>
+</div></div>
+<div class="tools"><button onclick="editMaterial('${x.id}')">Modifica</button>
+<button onclick="removeMaterial('${x.id}')">Elimina</button></div>
+</div>`
+}
+function inventoryHTML(){
+const q=$("search").value.toLowerCase().trim();
+const f=$("filter").value;
+return categories().map(c=>{
+const rows=state.items.filter(x=>x.category===c&&[x.name,x.color,x.variant,x.sub,x.category].join(" ").toLowerCase().includes(q)&&(f==="all"||(f==="low"&&low(x))||(f==="empty"&&x.qty===0)||(f==="ok"&&!low(x))));
+if(!rows.length)return "";
+const subs=grouped(rows,x=>x.sub||"Principale").map(([s,arr])=>{
+const mats=grouped(arr,x=>x.name).map(([name,variants])=>
+`<details data-key="material-${esc(c+s+name)}"><summary>${esc(name)} · ${variants.length} variante/i</summary>
+<div class="details">${variants.sort((a,b)=>sort(a.color+a.variant,b.color+b.variant)).map(materialCard).join("")}</div></details>`).join("");
+return `<details data-key="sub-${esc(c+s)}"><summary>${esc(s)} · ${arr.length}</summary><div class="details">${mats}</div></details>`
+}).join("");
+return `<details data-key="cat-${esc(c)}"><summary>${esc(c)} · ${rows.length} materiali</summary><div class="details">${subs}</div></details>`
+}).join("")||"<p>Nessun materiale trovato.</p>"
+}
+function renderOrders(){
+const rows=state.items.filter(x=>low(x)||state.orders[x.id]);
+const html=grouped(rows,x=>x.category).map(([c,arr])=>{
+const groups=grouped(arr,x=>x.name).map(([name,variants])=>
+`<details data-key="order-material-${esc(c+name)}"><summary>${esc(name)} · ${variants.length}</summary><div class="details">${variants.map(x=>{
+const stage=state.orders[x.id]||"Da ordinare";
+return `<div class="item"><b>${esc(x.color)} · ${esc(x.variant)}</b>
+<p>Rimasti: <strong>${num(x.qty)} ${esc(x.unit)}</strong> · Minimo ${num(x.min)}</p>
+<select onchange="setOrder('${x.id}',this.value)">
+${["Da ordinare","Ordinato","Ricevuto"].map(v=>`<option ${v===stage?"selected":""}>${v}</option>`).join("")}
+</select>
+<button onclick="receive('${x.id}')">Registra arrivo</button></div>`
+}).join("")}</div></details>`).join("");
+return `<details data-key="order-cat-${esc(c)}"><summary>${esc(c)} · ${arr.length} materiali</summary><div class="details">${groups}</div></details>`
+}).join("");
+preserve("orderRows",html||"<p class='good'>Nessun ordine aperto.</p>")
+}
+function renderService(){
+$("serviceRows").innerHTML=state.items.slice().sort((a,b)=>sort(a.category+a.name,b.category+b.name)).map(x=>
+`<div class="row item"><div><b>${esc(x.name)}</b><br><small>${esc(x.category)} · ${esc(x.color)} · Disponibili ${num(x.qty)}</small></div>
+<input type="number" min="0" max="${num(x.qty)}" value="0" data-service="${x.id}" style="width:75px"></div>`
+).join("")
+}
+function renderHistory(){
+const h=state.history.filter(x=>x.type==="scarico");
+const totals=new Map();
+h.forEach(e=>totals.set(e.id,(totals.get(e.id)||0)+e.amount));
+const rank=[...totals.entries()].sort((a,b)=>b[1]-a[1]);
+$("historyStats").innerHTML=`<div class="card pad">Movimenti registrati: <b>${state.history.length}</b> · Pezzi utilizzati: <b>${h.reduce((s,x)=>s+x.amount,0)}</b></div>`;
+$("ranking").innerHTML=rank.map(([id,count],i)=>{
+const x=state.items.find(v=>v.id===id);
+return `<div class="item">${i+1}. <b>${esc(x?.name||"Materiale eliminato")}</b> · ${count} utilizzati</div>`
+}).join("")||"<p class='muted'>Non ci sono ancora consumi registrati.</p>";
+$("movements").innerHTML=state.history.slice(-15).reverse().map(x=>
+`<div class="item"><b>${esc(x.name)}</b> · ${x.type==="scarico"?"−":"+"}${x.amount}<br><small>${esc(x.date)} · ${esc(x.service||x.type)}</small></div>`
+).join("")||"<p class='muted'>Nessun movimento.</p>"
+}
+function render(){
+$("total").textContent=state.items.length;
+$("low").textContent=state.items.filter(low).length;
+$("empty").textContent=state.items.filter(x=>x.qty===0).length;
+preserve("inventoryRows",inventoryHTML());
+renderOrders();
+renderHistory();
+if(!$("service").classList.contains("hidden"))renderService()
+}
+function record(x,amount,type,service=""){
+state.history.push({id:x.id,name:x.name,color:x.color,amount,type,service,date:new Date().toLocaleString("it-IT")})
+}
+function adjust(id,delta){
+const x=state.items.find(v=>v.id===id);
+if(!x)return;
+if(x.qty+delta<0)return alert("Giacenza insufficiente.");
+x.qty+=delta;
+record(x,Math.abs(delta),delta<0?"scarico":"carico","Modifica manuale");
+save()
+}
+function addMaterial(){
+const category=prompt("Categoria:","CASSE");
+if(!category?.trim())return;
+const sub=prompt("Sottocategoria:","Principale");
+if(sub===null)return;
+const name=prompt("Nome materiale:");
+if(!name?.trim())return;
+const color=prompt("Colore:","")??"";
+const variant=prompt("Variante:","")??"";
+const qty=num(prompt("Giacenza iniziale:","0"));
+const min=num(prompt("Giacenza minima:","5"));
+state.items.push({id:uid(),category:category.trim(),sub:sub.trim(),name:name.trim(),color,variant,qty,min,unit:"pz"});
+save()
+}
+function editMaterial(id){
+const x=state.items.find(v=>v.id===id);
+if(!x)return;
+const name=prompt("Nome:",x.name);
+if(name===null)return;
+const color=prompt("Colore:",x.color);
+if(color===null)return;
+const variant=prompt("Variante:",x.variant);
+if(variant===null)return;
+const category=prompt("Categoria:",x.category);
+if(category===null)return;
+const sub=prompt("Sottocategoria:",x.sub);
+if(sub===null)return;
+const min=prompt("Giacenza minima:",x.min);
+if(min===null)return;
+Object.assign(x,{name:name.trim(),color:color.trim(),variant:variant.trim(),category:category.trim(),sub:sub.trim(),min:num(min)});
+save()
+}
+function removeMaterial(id){
+if(!confirm("Eliminare il materiale dalla beta?"))return;
+state.items=state.items.filter(x=>x.id!==id);
+delete state.orders[id];
+save()
+}
+function completeService(){
+const selected=[...document.querySelectorAll("[data-service]")].map(el=>({x:state.items.find(x=>x.id===el.dataset.service),n:num(el.value)})).filter(v=>v.x&&v.n>0);
+if(!selected.length)return alert("Seleziona almeno un materiale.");
+if(selected.some(v=>v.n>v.x.qty))return alert("Quantità insufficienti. Nessuna giacenza modificata.");
+if(!confirm("Confermare lo scarico di "+selected.length+" materiali?"))return;
+const service=$("serviceName").value.trim()||"Servizio senza riferimento";
+selected.forEach(({x,n})=>{x.qty-=n;record(x,n,"scarico",service)});
+$("serviceName").value="";
+save();
+alert("Scarico registrato correttamente.")
+}
+function setOrder(id,value){
+state.orders[id]=value;
+save()
+}
+function receive(id){
+const x=state.items.find(v=>v.id===id);
+if(!x)return;
+const raw=prompt("Quanti pezzi sono arrivati?","1");
+if(raw===null)return;
+const n=num(raw);
+if(!n)return alert("Inserisci una quantità maggiore di zero.");
+x.qty+=n;
+record(x,n,"carico","Ricezione ordine");
+delete state.orders[id];
+save()
+}
+function download(name,content,type){
+const a=document.createElement("a");
+const url=URL.createObjectURL(new Blob([content],{type}));
+a.href=url;a.download=name;a.click();
+setTimeout(()=>URL.revokeObjectURL(url),2000)
+}
+function csv(rows){
+return "\ufeff"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n")
+}
+function exportOrders(){
+download("ordini_beta.csv",csv([["Categoria","Materiale","Colore","Variante","Giacenza","Minimo","Stato"],...state.items.filter(x=>low(x)||state.orders[x.id]).map(x=>[x.category,x.name,x.color,x.variant,x.qty,x.min,state.orders[x.id]||"Da ordinare"])]),"text/csv")
+}
+function exportHistory(){
+download("consumi_beta.csv",csv([["Data","Materiale","Colore","Quantità","Tipo","Servizio"],...state.history.map(x=>[x.date,x.name,x.color,x.amount,x.type,x.service])]),"text/csv")
+}
+function exportBackup(){
+download("backup_beta.json",JSON.stringify(state,null,2),"application/json")
+}
+async function importBackup(e){
+const file=e.target.files[0];
+if(!file)return;
+try{
+const data=JSON.parse(await file.text());
+if(!Array.isArray(data.items)||!Array.isArray(data.history))throw Error("Formato non valido");
+if(!confirm("Sostituire i dati dimostrativi della beta?"))return;
+state=data;
+state.orders ||= {};
+save()
+}catch(err){alert("Importazione non riuscita: "+err.message)}
+e.target.value=""
+}
+function resetDemo(){
+if(!confirm("Ripristinare i dati dimostrativi?"))return;
+state={items:clone(initial),history:[],orders:{}};
+save()
+}
+tab("inventory");
+</script>
+</body>
+</html>
