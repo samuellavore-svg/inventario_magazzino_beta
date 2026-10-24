@@ -1,0 +1,476 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101e31"><title>Inventario Padre Pio — Beta privata</title><style>
+:root{color-scheme:dark;--bg:#0a1220;--panel:#132239;--panel2:#1a2d48;--line:#30415b;--text:#f2f5fb;--muted:#a9b9cf;--accent:#62b8f8;--green:#54d6a2;--amber:#ffc56d;--red:#ff8290}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 12px;border-radius:11px}button:hover{border-color:var(--accent)}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:#236ca6;border-color:#378bc8;color:white}.dangerbtn{color:var(--red)}input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#0e1b2e;color:var(--text);min-width:0}label{display:block;color:var(--muted);font-size:12px;margin:0 0 5px}.shell{max-width:1150px;margin:auto;padding:18px 15px 90px}.header{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.brand{font-weight:850;font-size:21px}.subtitle{color:var(--muted);font-size:12px}.pill{display:inline-block;border:1px solid #3d5d7d;background:#183753;border-radius:999px;padding:3px 9px;font-size:11px;color:#b9e2ff}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.toolbar button{flex:1;min-width:110px}.active{border-color:var(--accent)!important;background:#1b4971!important}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}.card,.section{background:var(--panel);border:1px solid var(--line);border-radius:15px}.card{padding:14px}.card strong{display:block;font-size:26px}.card small{color:var(--muted);font-size:11px}.section{padding:14px;margin:12px 0}.section h2{font-size:18px;margin:0 0 12px}.row{display:flex;gap:9px;align-items:center;justify-content:space-between}.row.wrap{flex-wrap:wrap}.muted{color:var(--muted)}.small{font-size:12px}.searchrow{display:grid;grid-template-columns:1fr 145px;gap:8px}.accordion{border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden;background:#102039}.accbtn{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;border:0;border-radius:0;background:transparent;padding:13px}.accbody{padding:0 11px 10px}.item{border-top:1px solid var(--line);padding:10px 0}.itemhead{display:flex;justify-content:space-between;align-items:center;gap:9px;width:100%;background:transparent;border:0;text-align:left;padding:8px 2px}.itemdetails{padding:10px 5px 6px}.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{font-size:11px;background:#25405c;border-radius:8px;padding:3px 7px;color:#d7e7f8}.good{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}.qty{display:flex;gap:9px;align-items:center;justify-content:flex-end}.qty button{min-width:40px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.full{grid-column:1/-1}.empty{padding:20px;color:var(--muted);text-align:center}.line{border-top:1px solid var(--line);margin:12px 0}.orderline{padding:10px 0;border-top:1px solid var(--line)}.mini{padding:6px 9px;font-size:12px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:10px;border-bottom:1px solid var(--line)}th{color:var(--muted)}.hide{display:none!important}.footer{color:var(--muted);font-size:12px;margin-top:25px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#23547b;border:1px solid var(--accent);padding:12px 18px;border-radius:12px;z-index:3;display:none;max-width:90vw}.twocol{display:grid;grid-template-columns:1fr;gap:12px}.bar{height:9px;background:#2d4158;border-radius:10px;overflow:hidden;margin-top:5px}.bar>div{height:100%;background:var(--accent)}.tag{font-size:11px;padding:3px 7px;border-radius:8px;background:#29405a}.desktop .shell{max-width:1450px}.desktop .twocol{grid-template-columns:1.2fr .8fr}.desktop .cards{grid-template-columns:repeat(3,1fr)}.desktop .section{padding:20px}.desktop .itemdetails{display:flex;justify-content:space-between;align-items:center;gap:12px}.desktop .searchrow{grid-template-columns:1fr 190px}@media(min-width:850px){body:not(.mobile) .twocol{grid-template-columns:1.2fr .8fr}body:not(.mobile) .shell{max-width:1350px}}@media(max-width:430px){.brand{font-size:18px}.shell{padding:13px 10px 75px}.searchrow{grid-template-columns:1fr}.toolbar button{min-width:90px}.cards .card{padding:10px}.cards strong{font-size:22px}.fields{grid-template-columns:1fr}.desktop .shell{min-width:900px}.desktop{overflow-x:auto}.desktop .cards{grid-template-columns:repeat(3,1fr)}}
+
+/* Ricerca rapida per servizio e selezione del periodo statistiche */
+.service-search{margin:12px 0}
+.service-categories{margin:12px 0}
+.service-category .accbtn{min-height:53px}
+.service-subheading{font-size:12px;font-weight:750;letter-spacing:.035em;color:var(--muted);text-transform:uppercase;padding:13px 4px 6px;border-bottom:1px solid var(--line)}
+.service-product{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 4px;border-bottom:1px solid #30415b80}
+.service-product:last-child{border-bottom:0}
+.service-product-label{flex:1;min-width:0}
+.service-product-label b{display:block}
+.service-product-meta{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.service-product-quantity{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.service-product-quantity input{width:82px;min-width:74px;text-align:center}
+.service-amount{font-size:12px;color:var(--muted);text-align:right;min-width:61px}
+.service-count{display:inline-flex;align-items:center;gap:6px}
+.service-summary{background:var(--panel);border-top:1px solid var(--line);padding:13px 0 3px}
+.stats-period{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+.stats-period button{flex:1;min-width:125px}
+.stats-month-select{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+.stats-month-select label{margin:0}
+.stats-month-select input{width:205px;max-width:100%}
+.stats-overview{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.stats-overview .tag{padding:8px 11px;font-size:12px}
+@media(max-width:430px){.service-product{align-items:flex-start}.service-product-quantity{gap:6px}.service-product-quantity input{width:66px;min-width:62px}.service-amount{min-width:44px}.stats-month-select input{width:100%}}
+</style><style>
+.modalback{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:14px;z-index:20}.modalbox{width:min(540px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}.modalbox h2{margin:0 0 16px}.modalactions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}.management-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.management-actions button{flex:1;min-width:145px}
+
+/* Struttura originale del magazzino: categoria > sottocategoria > materiale > varianti */
+.hierarchy-cat{border-color:#426388;background:#112740}
+.hierarchy-sub{margin:9px 0 9px 13px;background:#142840}
+.hierarchy-material{margin:7px 0 7px 13px;background:#192f49}
+.hierarchy-cat>.accbtn{min-height:52px}
+.hierarchy-sub>.accbtn,.hierarchy-material>.accbtn{min-height:46px}
+.hierarchy-cat>.accbody,.hierarchy-sub>.accbody{padding-bottom:12px}
+.variantline{border-top:1px solid var(--line);padding:12px 5px}
+.varianthead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.variantcontrols{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+.variantcontrols button{padding:7px 10px}
+.variantcontrols .quantity{font-weight:750;min-width:60px;text-align:center}
+.accmeta{color:var(--muted);font-size:12px;flex-shrink:0;text-align:right}
+.hierarchy-hint{font-size:12px;color:var(--muted);margin:7px 0 12px}
+@media(max-width:430px){.hierarchy-sub,.hierarchy-material{margin-left:7px}.accmeta{font-size:11px}.variantcontrols{gap:5px}.variantcontrols button{padding:7px 9px}}
+
+/* Schede della home interattive: mantengono la grafica originale. */
+button.card.card-link{display:block;width:100%;text-align:left;min-width:0;cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:15px;transition:border-color .15s,background .15s,transform .15s}
+button.card.card-link:hover{border-color:var(--accent);background:#193150;transform:translateY(-1px)}
+button.card.card-link:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.card-link .card-action{display:block;color:var(--accent);font-size:11px;margin-top:5px}
+.quick-filter-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.quick-filter-head h2{margin:0}
+
+/* Elenchi compatti per i filtri di magazzino: categorie visibili, materiali in lista. */
+.compact-category{margin:12px 0}
+.compact-category .accbtn{min-height:49px}
+.compact-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 4px;border-top:1px solid var(--line)}
+.compact-title{font-weight:700;overflow-wrap:anywhere}
+.compact-detail{color:var(--muted);font-size:12px;margin-top:4px}
+.compact-right{display:flex;gap:9px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+.compact-stock{font-weight:750;white-space:nowrap;text-align:right;min-width:55px}
+.compact-stock small{display:block;color:var(--muted);font-size:10px;font-weight:400}
+.compact-right .mini{padding:6px 9px}
+@media(max-width:480px){.compact-row{grid-template-columns:minmax(0,1fr) auto;gap:6px}.compact-right{gap:5px}.compact-stock{min-width:45px}.compact-right .mini{padding:5px 7px}}
+</style><style>
+.order-summary{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 19px}
+.order-section-title{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:15px 0 8px}
+.order-section-title h2{margin:0}
+.order-category{border:1px solid var(--line);background:#102039;border-radius:12px;margin:10px 0;overflow:hidden}
+.order-category-title{background:#17304b;padding:10px 13px;font-weight:750;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.order-product-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-top:1px solid var(--line)}
+.order-product-info{min-width:0;flex:1}
+.order-product-info b{display:block;margin-bottom:3px}
+.order-product-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px;max-width:290px}
+.order-shortfall{font-size:12px;color:var(--amber);font-weight:650;margin-right:4px}
+.order-delivered{border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.order-delivered summary{padding:13px;cursor:pointer;background:#15304a;font-weight:700}
+@media(max-width:570px){.order-product-row{align-items:flex-start;flex-direction:column}.order-product-actions{max-width:none;width:100%;justify-content:flex-start}.order-product-actions button{padding:9px 10px}}
+</style></head><body class="mobile"><div class="shell"><header class="header"><div><div class="brand">✦ Inventario Padre Pio <span class="pill">BETA PRIVATA</span></div><div class="subtitle">Prototipo locale • Nessun collegamento a Firebase</div></div><div class="row"><button id="viewBtn" onclick="switchView()">🖥️ Vista desktop</button><button onclick="resetDemo()">↻ Ripristina demo</button></div></header><nav class="toolbar" id="nav"></nav><main id="main"></main><div class="footer">Beta con categorie → sottocategorie → materiali → varianti. Le modifiche vengono salvate solo in questo browser. Nessuna giacenza del gestionale ufficiale viene modificata.</div></div><div class="toast" id="toast"></div><script>
+'use strict';
+const KEY='padrepio_beta_v1';
+const demo=()=>({materials:[
+{id:'m1',cat:'CASSE',sub:'Classiche',name:'Cassa Roma',color:'Noce',variant:'Standard',qty:2,min:4,unit:'pz'},
+{id:'m2',cat:'CASSE',sub:'Classiche',name:'Cassa Roma',color:'Bianco',variant:'Standard',qty:5,min:3,unit:'pz'},
+{id:'m3',cat:'CASSE',sub:'Pregiate',name:'Cassa Milano',color:'Rovere',variant:'Premium',qty:0,min:2,unit:'pz'},
+{id:'m4',cat:'ACCESSORI',sub:'Maniglie',name:'Maniglie ottone',color:'Oro',variant:'Set',qty:3,min:6,unit:'set'},
+{id:'m5',cat:'ACCESSORI',sub:'Croci',name:'Croce decorativa',color:'Argento',variant:'Piccola',qty:12,min:5,unit:'pz'},
+{id:'m6',cat:'TESSUTI',sub:'Rivestimenti',name:'Imbottitura',color:'Bianco',variant:'Standard',qty:4,min:6,unit:'pz'},
+{id:'m7',cat:'TESSUTI',sub:'Rivestimenti',name:'Velo',color:'Nero',variant:'Lungo',qty:10,min:3,unit:'pz'},
+{id:'m8',cat:'ACCESSORI',sub:'Maniglie',name:'Maniglie cromate',color:'Argento',variant:'Set',qty:8,min:4,unit:'set'}],orders:{},history:[{id:'h1',date:'2026-10-20',service:'Servizio dimostrativo A',lines:[{id:'m1',name:'Cassa Roma · Noce',qty:2},{id:'m4',name:'Maniglie ottone',qty:1}]},{id:'h2',date:'2026-10-21',service:'Servizio dimostrativo B',lines:[{id:'m1',name:'Cassa Roma · Noce',qty:1},{id:'m6',name:'Imbottitura',qty:2}]}]});
+let db;try{db=JSON.parse(localStorage.getItem(KEY))||demo();if(!Array.isArray(db.materials)||!Array.isArray(db.history))throw 0}catch{db=demo()};let tab='inventario',filter='all',query='',expanded=new Set(),serviceCart={},orderExpanded=new Set();const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),alpha=(a,b)=>a.localeCompare(b,'it',{sensitivity:'base',numeric:true}),stock=x=>x.qty===0?'bad':x.qty<x.min?'warn':'good',status=x=>x.qty===0?'Esaurito':x.qty<x.min?'Scorta bassa':'Disponibile',sortm=(a,b)=>alpha(a.name,b.name)||alpha(a.color,b.color)||alpha(a.variant,b.variant);function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch{}render()}function notify(msg){const e=$('toast');e.textContent=msg;e.style.display='block';clearTimeout(notify.t);notify.t=setTimeout(()=>e.style.display='none',2700)}function switchView(){document.body.classList.toggle('desktop');document.body.classList.toggle('mobile');$('viewBtn').textContent=document.body.classList.contains('desktop')?'📱 Vista telefono':'🖥️ Vista desktop'}function resetDemo(){if(confirm('Ripristinare i dati dimostrativi? Le modifiche fatte in questa beta verranno perse.')){db=demo();expanded.clear();serviceCart={};save();notify('Demo ripristinata')}}function changeTab(t){tab=t;expanded.clear();render()}
+function dashboardOpen(where){
+ if(where==='zero'){
+  tab='inventario';filter='zero';query='';expanded.clear();render();
+  const result=document.getElementById('magazzino-heading');
+  if(result)result.scrollIntoView({behavior:'smooth',block:'start'});
+ }else if(where==='orders'){
+  changeTab('ordini');window.scrollTo({top:0,behavior:'smooth'});
+ }else if(where==='management'){
+  changeTab('gestione');window.scrollTo({top:0,behavior:'smooth'});
+ }
+}
+function showAllMaterials(){tab='inventario';filter='all';query='';expanded.clear();render()}
+function nav(){return [['inventario','📦 Inventario'],['ordini','🛒 Ordini'],['servizi','📋 Scarico servizio'],['statistiche','📊 Statistiche'],['gestione','⚙️ Gestione']].map(([k,v])=>`<button class="${tab===k?'active':''}" onclick="changeTab('${k}')">${v}</button>`).join('')}function stats(){return `<div class="cards" aria-label="Riepilogo rapido magazzino">
+<button type="button" class="card card-link" onclick="dashboardOpen('management')" aria-label="Apri gestione materiali"><small>Materiali</small><strong>${db.materials.length}</strong><small>Varianti censite</small><span class="card-action">Gestisci materiali →</span></button>
+<button type="button" class="card card-link" onclick="dashboardOpen('orders')" aria-label="Apri elenco degli ordini"><small>Da ordinare</small><strong class="warn">${db.materials.filter(x=>x.qty<x.min).length}</strong><small>Sotto minimo</small><span class="card-action">Vai agli ordini →</span></button>
+<button type="button" class="card card-link" onclick="dashboardOpen('zero')" aria-label="Visualizza tutti i prodotti esauriti"><small>Esauriti</small><strong class="bad">${db.materials.filter(x=>x.qty===0).length}</strong><small>Giacenza zero</small><span class="card-action">Vedi esauriti →</span></button></div>`}
+// Le categorie dei risultati filtrati sono aperte per impostazione predefinita.
+const compactCollapsed=new Set();
+function toggleCompactCategory(cat){
+ if(compactCollapsed.has(cat))compactCollapsed.delete(cat);
+ else compactCollapsed.add(cat);
+ render();
+}
+function compactFilterMarkup(items){
+ if(!items.length)return '<div class="empty">Nessun materiale trovato.</div>';
+ const groups=catsFor(items);
+ return groups.map((cat,index)=>{
+  const rows=items.filter(x=>sameName(x.cat,cat)).sort((a,b)=>alpha(a.name,b.name)||alpha(a.color,b.color)||alpha(a.variant,b.variant));
+  const open=!compactCollapsed.has(cat);
+  return `<div class="accordion hierarchy-cat compact-category">
+   <button type="button" class="accbtn" aria-expanded="${open}" onclick="toggleCompactCategory(decodeURIComponent('${encodeURIComponent(cat).replace(/'/g,'%27')}'))">
+    <span>${open?'▾':'▸'} <b>${esc(cat)}</b></span><span class="accmeta">${rows.length} ${rows.length===1?'variante':'varianti'}</span>
+   </button>
+   ${open?`<div class="accbody">${rows.map(x=>`<div class="compact-row" data-material-id="${esc(x.id)}">
+    <div><div class="compact-title">${esc(x.name)}</div>
+    <div class="compact-detail">${esc(x.sub||'Generale')} · ${esc(x.color||'Senza colore')} · ${esc(x.variant||'Standard')}</div>
+    <div class="small ${stock(x)}">${status(x)}</div></div>
+    <div class="compact-right"><span class="compact-stock ${stock(x)}">${x.qty} ${esc(x.unit||'pz')}<small>min. ${x.min}</small></span>
+    <button class="mini" title="Scarica un'unità" aria-label="Scarica una unità da ${esc(x.name)}" onclick="qty('${x.id}',-1)">−</button>
+    <button class="mini" title="Aggiungi un'unità" aria-label="Aggiungi una unità a ${esc(x.name)}" onclick="qty('${x.id}',1)">+</button>
+    </div></div>`).join('')}</div>`:''}
+   </div>`;
+ }).join('');
+}
+function catsFor(arr){return [...new Set(arr.map(x=>x.cat))].sort(alpha)}function toggle(k){expanded.has(k)?expanded.delete(k):expanded.add(k);render()}function qty(id,d){const x=db.materials.find(x=>x.id===id);if(!x)return;if(x.qty+d<0)return notify('Giacenza già a zero');x.qty+=d;save()}function hierarchyKey(type,...parts){return 'h:'+type+':'+encodeURIComponent(JSON.stringify(parts)).replace(/'/g,'%27')}
+function sameName(a,b){return String(a??'').trim().toLocaleLowerCase('it')===String(b??'').trim().toLocaleLowerCase('it')}
+function uniqueLabels(names){const out=[];for(const n of names){const name=String(n??'').trim();if(name&&!out.some(v=>sameName(v,name)))out.push(name)}return out.sort(alpha)}
+function reconcileHierarchy(){
+ if(!Array.isArray(db.categories))db.categories=[];
+ if(!Array.isArray(db.subcategories))db.subcategories=[];
+ // Mantiene anche le categorie e sottocategorie create vuote.
+ for(const x of db.materials){
+  x.cat=String(x.cat||x.category||'SENZA CATEGORIA').trim()||'SENZA CATEGORIA';
+  x.sub=String(x.sub||x.subcategory||'Generale').trim()||'Generale';
+  if(!db.categories.some(c=>sameName(c,x.cat)))db.categories.push(x.cat);
+  if(!db.subcategories.some(pair=>Array.isArray(pair)&&sameName(pair[0],x.cat)&&sameName(pair[1],x.sub)))db.subcategories.push([x.cat,x.sub]);
+ }
+ db.categories=uniqueLabels(db.categories);
+ db.subcategories=db.subcategories.filter(p=>Array.isArray(p)&&p.length>=2).map(p=>[String(p[0]).trim(),String(p[1]).trim()]);
+}
+function variantCard(x,mode){
+ const color=x.color||'Senza colore',variation=x.variant||'Standard';
+ return `<div class="variantline" data-material-id="${esc(x.id)}"><div class="varianthead"><div class="chips"><span class="chip">${esc(color)}</span><span class="chip">${esc(variation)}</span><span class="chip">Minimo ${x.min} ${esc(x.unit||'pz')}</span></div><span class="small ${stock(x)}">${status(x)}</span></div>
+ <div class="variantcontrols"><button aria-label="Scarica una unità da ${esc(x.name)} ${esc(color)}" onclick="qty('${x.id}',-1)">−</button><span class="quantity">${x.qty} ${esc(x.unit||'pz')}</span><button aria-label="Aggiungi una unità a ${esc(x.name)} ${esc(color)}" onclick="qty('${x.id}',1)">+</button><button class="mini" onclick="editItem('${x.id}')">Modifica</button><button class="mini" onclick="moveItem('${x.id}')">Sposta</button>${mode==='management'?`<button class="mini dangerbtn" onclick="removeItem('${x.id}')">Elimina</button>`:''}</div></div>`;
+}
+function hierarchyMarkup(items,mode='inventory',showEmpty=true,expandFiltered=false){
+ reconcileHierarchy();
+ const categoryNames=uniqueLabels([...db.categories,...db.materials.map(x=>x.cat)]);
+ let visibleGroups=0;
+ const rendered=categoryNames.map(cat=>{
+  const group=items.filter(x=>sameName(x.cat,cat)).sort(sortm);
+  if(!showEmpty&&!group.length)return '';
+  visibleGroups++;
+  const ck=hierarchyKey('category',cat),cOpen=expandFiltered||expanded.has(ck);
+  const subNames=uniqueLabels([...db.subcategories.filter(p=>sameName(p[0],cat)).map(p=>p[1]),...db.materials.filter(x=>sameName(x.cat,cat)).map(x=>x.sub)]);
+  const contents=subNames.map(sub=>{
+   const subItems=group.filter(x=>sameName(x.sub,sub));
+   if(!showEmpty&&!subItems.length)return '';
+   const sk=hierarchyKey('subcategory',cat,sub),sOpen=expandFiltered||expanded.has(sk);
+   const materialNames=uniqueLabels(subItems.map(x=>x.name));
+   const materials=materialNames.map(name=>{
+    const variants=subItems.filter(x=>sameName(x.name,name)).sort(sortm);
+    const mk=hierarchyKey('material',cat,sub,name),mOpen=expandFiltered||expanded.has(mk);
+    const summary=variants.length===1?'1 variante':variants.length+' varianti';
+    return `<div class="accordion hierarchy-material"><button class="accbtn" aria-expanded="${mOpen}" onclick="toggle('${mk}')"><span>${mOpen?'▾':'▸'} <b>${esc(name)}</b></span><span class="accmeta">${summary}</span></button>${mOpen?`<div class="accbody">${variants.map(x=>variantCard(x,mode)).join('')}</div>`:''}</div>`;
+   }).join('');
+   return `<div class="accordion hierarchy-sub"><button class="accbtn" aria-expanded="${sOpen}" onclick="toggle('${sk}')"><span>${sOpen?'▾':'▸'} ${esc(sub)}</span><span class="accmeta">${subItems.length} varianti</span></button>${sOpen?`<div class="accbody">${materials||'<div class="empty">Nessun materiale in questa sottocategoria.</div>'}</div>`:''}</div>`;
+  }).join('');
+  const names=uniqueLabels(group.map(x=>x.name));
+  return `<div class="accordion hierarchy-cat"><button class="accbtn" aria-expanded="${cOpen}" onclick="toggle('${ck}')"><span>${cOpen?'▾':'▸'} <b>${esc(cat)}</b></span><span class="accmeta">${names.length} materiali · ${group.length} varianti</span></button>${cOpen?`<div class="accbody">${contents||'<div class="empty">Categoria vuota. Usa Gestione per aggiungere sottocategorie e materiali.</div>'}</div>`:''}</div>`;
+ }).join('');
+ return visibleGroups?rendered:'<div class="empty">Nessun materiale trovato.</div>';
+}
+function inventory(){
+ const needle=query.trim().toLocaleLowerCase('it');
+ const filtered=db.materials.filter(x=>{
+  const txt=[x.name,x.cat,x.sub,x.color,x.variant].join(' ').toLocaleLowerCase('it');
+  return txt.includes(needle)&&(filter==='all'||(filter==='zero'?x.qty===0:filter==='low'?x.qty<x.min:x.qty>=x.min));
+ });
+ const active=Boolean(needle||filter!=='all');
+ return `${stats()}<section class="section"><div class="quick-filter-head"><h2 id="magazzino-heading">${filter==='zero'?'Prodotti esauriti':filter==='low'?'Materiali da ordinare':filter==='ok'?'Materiali disponibili':'Magazzino'}</h2>${filter!=='all'||needle?'<button class="mini" onclick="showAllMaterials()">Mostra tutti</button>':''}</div><div class="searchrow"><input aria-label="Cerca materiali" placeholder="🔎 Cerca materiale, categoria, colore..." value="${esc(query)}" oninput="query=this.value;renderKeepFocus(this)"><select onchange="filter=this.value;render()"><option value="all" ${filter==='all'?'selected':''}>Tutti i materiali</option><option value="low" ${filter==='low'?'selected':''}>Da ordinare</option><option value="zero" ${filter==='zero'?'selected':''}>Esauriti</option><option value="ok" ${filter==='ok'?'selected':''}>Disponibili</option></select></div>${filter==='low'||filter==='zero'?'<p class="hierarchy-hint">Elenco rapido per categoria: tutti i materiali sono subito visibili, in ordine alfabetico. Tocca il nome della categoria per chiudere o aprire la lista.</p>':'<p class="hierarchy-hint">Apri una categoria, poi una sottocategoria e infine un materiale per vedere tutte le sue varianti e le giacenze.</p>'}${filter==='low'||filter==='zero'?compactFilterMarkup(filtered):hierarchyMarkup(filtered,'inventory',!active,active)}</section>`;
+}
+function renderKeepFocus(el){const p=el.selectionStart;render();const n=document.querySelector('input[aria-label="Cerca materiali"]');if(n){n.focus();n.setSelectionRange(p,p)}}function editItem(id){const x=db.materials.find(x=>x.id===id);if(!x)return;const name=prompt('Nome materiale',x.name);if(name===null||!name.trim())return;const color=prompt('Colore',x.color);if(color===null)return;const variant=prompt('Variante',x.variant);if(variant===null)return;const min=prompt('Giacenza minima',x.min);if(min===null)return;x.name=name.trim();x.color=color.trim();x.variant=variant.trim();x.min=Math.max(0,Math.floor(Number(min)||0));save();notify('Materiale aggiornato')}function addItem(){const cat=prompt('Categoria (es. CASSE)');if(!cat?.trim())return;const sub=prompt('Sottocategoria','Generale');if(sub===null)return;const name=prompt('Nome materiale');if(!name?.trim())return;const color=prompt('Colore','');if(color===null)return;const variant=prompt('Variante','');if(variant===null)return;const qty=prompt('Giacenza iniziale','0');if(qty===null)return;const min=prompt('Giacenza minima','3');if(min===null)return;db.materials.push({id:'m'+Date.now().toString(36),cat:cat.trim().toUpperCase(),sub:sub.trim()||'Generale',name:name.trim(),color:color.trim(),variant:variant.trim(),qty:Math.max(0,Math.floor(Number(qty)||0)),min:Math.max(0,Math.floor(Number(min)||0)),unit:'pz'});save();notify('Materiale aggiunto')}function removeItem(id){const x=db.materials.find(x=>x.id===id);if(x&&pendingOrders().some(o=>o.materialId===id))return notify('Prima consegna o annulla gli ordini aperti per questo materiale');if(x&&confirm('Eliminare '+x.name+' dalla beta?')){db.materials=db.materials.filter(x=>x.id!==id);save()}}
+// Ordini beta: separati dalle giacenze finché non si conferma la consegna.
+if(!Array.isArray(db.purchaseOrders))db.purchaseOrders=[];
+function pendingOrders(){return db.purchaseOrders.filter(o=>o.status==='ordinato')}
+function pendingQuantity(materialId){return pendingOrders().filter(o=>o.materialId===materialId).reduce((sum,o)=>sum+o.quantity,0)}
+function orderLabel(o){
+ const x=db.materials.find(m=>m.id===o.materialId);
+ return {name:x?.name||o.name||'Materiale non disponibile',cat:x?.cat||o.cat||'SENZA CATEGORIA',sub:x?.sub||o.sub||'Generale',color:x?.color??o.color??'',variant:x?.variant??o.variant??'',unit:x?.unit||o.unit||'pz',qty:x?.qty};
+}
+function orderDate(value){if(!value)return '—';const d=new Date(value);return Number.isNaN(d.getTime())?String(value):d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function orderMaterialChoices(selected){return [...db.materials].sort((a,b)=>alpha(a.cat,b.cat)||alpha(a.sub,b.sub)||alpha(a.name,b.name)||alpha(a.color,b.color)||alpha(a.variant,b.variant)).map(x=>`<option value="${esc(x.id)}" ${x.id===selected?'selected':''}>${esc(x.cat+' / '+x.name+' · '+(x.color||x.variant||'Standard')+(x.color&&x.variant?' · '+x.variant:''))} (disponibili: ${x.qty})</option>`).join('')}
+function createPurchaseOrder(materialId=''){
+ if(!db.materials.length)return notify('Inserisci prima un materiale in Gestione');
+ const x=db.materials.find(m=>m.id===materialId)||db.materials.slice().sort((a,b)=>alpha(a.name,b.name))[0];
+ const suggested=Math.max(1,x.min-x.qty-pendingQuantity(x.id));
+ modal('Registra nuovo ordine',`<p class="muted small">Scegli il materiale e specifica la quantità ordinata. La giacenza aumenterà soltanto dopo aver confermato la consegna.</p>
+ <div class="fields"><div class="full"><label>Materiale e variante</label><select name="materialId" id="purchaseMaterial" required>${orderMaterialChoices(x.id)}</select></div>
+ ${field('Quantità ordinata','quantity',suggested,'number')}
+ <div><label>Fornitore / riferimento (facoltativo)</label><input name="note" maxlength="120" placeholder="Es. Ordine telefonico"></div></div>`,f=>{
+  const item=db.materials.find(x=>x.id===f.get('materialId'));
+  const n=Number(f.get('quantity'));
+  if(!item||!Number.isSafeInteger(n)||n<1||n>1000000){notify('Inserisci una quantità valida (da 1 a 1.000.000)');return false}
+  db.purchaseOrders.push({id:'po'+Date.now().toString(36)+Math.random().toString(36).slice(2,8),materialId:item.id,name:item.name,cat:item.cat,sub:item.sub,color:item.color,variant:item.variant,unit:item.unit,quantity:n,note:String(f.get('note')||'').trim().slice(0,120),status:'ordinato',createdAt:new Date().toISOString(),deliveredAt:null});
+  db.orders[item.id]='Ordinato';
+  save();notify('Ordine registrato: '+n+' '+(item.unit||'pz'));
+ });
+ const sel=$('purchaseMaterial');
+ if(sel)sel.onchange=()=>{const item=db.materials.find(m=>m.id===sel.value);const input=$('f_quantity');if(item&&input)input.value=Math.max(1,item.min-item.qty-pendingQuantity(item.id))};
+}
+function editPurchaseOrder(id){
+ const o=db.purchaseOrders.find(x=>x.id===id&&x.status==='ordinato');if(!o)return notify('Questo ordine non è più modificabile');
+ const x=orderLabel(o);
+ modal('Modifica ordine',`<p class="muted small">${esc(x.cat)} · <b>${esc(x.name)}</b> · ${esc(x.color)} ${esc(x.variant)}</p><div class="fields">${field('Quantità ordinata','quantity',o.quantity,'number')}<div><label>Fornitore / riferimento</label><input name="note" maxlength="120" value="${esc(o.note||'')}"></div></div>`,f=>{
+ const n=Number(f.get('quantity'));if(!Number.isSafeInteger(n)||n<1||n>1000000){notify('Quantità non valida');return false}
+ o.quantity=n;o.note=String(f.get('note')||'').trim().slice(0,120);save();notify('Ordine aggiornato');
+ });
+}
+function cancelPurchaseOrder(id){
+ const o=db.purchaseOrders.find(x=>x.id===id&&x.status==='ordinato');if(!o)return notify('Ordine già chiuso');
+ if(!confirm('Annullare questo ordine? Le giacenze non verranno modificate.'))return;
+ o.status='annullato';o.cancelledAt=new Date().toISOString();
+ if(!pendingOrders().some(x=>x.materialId===o.materialId))delete db.orders[o.materialId];
+ save();notify('Ordine annullato');
+}
+function confirmPurchaseDelivery(id){
+ const o=db.purchaseOrders.find(x=>x.id===id&&x.status==='ordinato');if(!o)return notify('Ordine già consegnato o annullato');
+ const x=db.materials.find(m=>m.id===o.materialId);
+ if(!x)return notify('Materiale non trovato: impossibile aggiornare la giacenza');
+ if(!confirm('Confermare la consegna di '+o.quantity+' '+(x.unit||'pz')+' di '+x.name+'? La giacenza passerà da '+x.qty+' a '+(x.qty+o.quantity)+'.'))return;
+ // Ricontrolla lo stato per evitare una doppia registrazione dello stesso ordine.
+ if(o.status!=='ordinato')return notify('Consegna già registrata');
+ x.qty+=o.quantity;o.status='ricevuto';o.deliveredAt=new Date().toISOString();
+ if(!pendingOrders().some(v=>v.materialId===o.materialId))db.orders[o.materialId]='Ricevuto';
+ save();notify('Consegna confermata. Nuova giacenza: '+x.qty+' '+(x.unit||'pz'));
+}
+function orderCategoryRows(rows,renderRow){
+ if(!rows.length)return '';
+ return catsFor(rows).map(cat=>{
+ const items=rows.filter(x=>sameName(x.cat,cat)).sort((a,b)=>alpha(a.name,b.name)||alpha(a.color,b.color)||alpha(a.variant,b.variant));
+ return `<div class="order-category"><div class="order-category-title">${esc(cat)} <span class="accmeta">${items.length} ${items.length===1?'materiale':'materiali'}</span></div>${items.map(renderRow).join('')}</div>`;
+ }).join('')
+}
+function orders(){
+ const pending=pendingOrders();
+ const needed=db.materials.filter(x=>x.qty<x.min&&x.min-x.qty>pendingQuantity(x.id)).sort((a,b)=>alpha(a.cat,b.cat)||sortm(a,b));
+ const active=pending.map(o=>({...orderLabel(o),order:o}));
+ const delivered=db.purchaseOrders.filter(o=>o.status==='ricevuto').slice().sort((a,b)=>String(b.deliveredAt||'').localeCompare(String(a.deliveredAt||'')));
+ const totalPending=pending.reduce((sum,o)=>sum+o.quantity,0);
+ return `<section class="section"><div class="row wrap"><h2>Ordini e consegne</h2><button class="primary" onclick="createPurchaseOrder()">+ Nuovo ordine</button></div>
+ <p class="muted small">Registra gli ordini senza cambiare le giacenze. All'arrivo della merce basta confermare la consegna: le quantità vengono caricate automaticamente.</p>
+ <div class="order-summary"><span class="pill">${needed.length} da ordinare</span><span class="pill">${pending.length} ordini aperti</span><span class="pill">${totalPending} unità in arrivo</span></div>
+ <div class="order-section-title"><h2>🛒 Da ordinare</h2><button class="mini" onclick="exportCsv()">⬇ CSV giacenze basse</button></div>
+ <p class="muted small">Elenco per categoria dei materiali sotto il minimo, considerando anche le quantità già ordinate.</p>
+ ${needed.length?orderCategoryRows(needed,x=>{
+ const incoming=pendingQuantity(x.id),missing=x.min-x.qty-incoming;
+ return `<div class="order-product-row"><div class="order-product-info"><b>${esc(x.name)}</b><div class="muted small">${esc(x.sub)} · ${esc(x.color||'Senza colore')} · ${esc(x.variant||'Standard')}</div><div class="small ${stock(x)}">In magazzino: ${x.qty} ${esc(x.unit)} · Minimo: ${x.min}${incoming?' · In arrivo: '+incoming:''}</div></div><div class="order-product-actions"><span class="order-shortfall">Mancano ${missing}</span><button class="mini primary" onclick="createPurchaseOrder('${x.id}')">Ordina</button></div></div>`
+ }):'<div class="empty good">Nessun materiale da ordinare: le scorte sono sufficienti oppure gli ordini già registrati coprono il minimo.</div>'}
+ <div class="line"></div><div class="order-section-title"><h2>📦 Materiali ordinati</h2><span class="pill">${pending.length} in attesa</span></div>
+ <p class="muted small">Questi materiali non sono ancora stati aggiunti alle giacenze.</p>
+ ${pending.length?orderCategoryRows(active,entry=>{
+ const o=entry.order;
+ return `<div class="order-product-row" data-purchase-id="${esc(o.id)}"><div class="order-product-info"><b>${esc(entry.name)}</b><div class="muted small">${esc(entry.sub)} · ${esc(entry.color||'Senza colore')} · ${esc(entry.variant||'Standard')}</div><div class="small"><span class="tag">Ordinato il ${orderDate(o.createdAt)}</span> <span class="pill">${o.quantity} ${esc(entry.unit)} in arrivo</span></div>${o.note?`<div class="muted small" style="margin-top:5px">Riferimento: ${esc(o.note)}</div>`:''}<div class="muted small">Giacenza attuale: ${entry.qty??'—'} ${esc(entry.unit)}</div></div>
+ <div class="order-product-actions"><button class="mini primary" onclick="confirmPurchaseDelivery('${o.id}')">✓ Conferma consegna</button><button class="mini" onclick="editPurchaseOrder('${o.id}')">Modifica</button><button class="mini dangerbtn" onclick="cancelPurchaseOrder('${o.id}')">Annulla</button></div></div>`
+ }):'<div class="empty">Non ci sono materiali ordinati in attesa di consegna.</div>'}
+ <div class="line"></div><details class="order-delivered"><summary>✓ Consegne registrate (${delivered.length})</summary><div class="accbody">${delivered.length?delivered.slice(0,30).map(o=>{const x=orderLabel(o);return `<div class="order-product-row"><div class="order-product-info"><b>${esc(x.name)}</b><div class="muted small">${esc(x.cat)} · ${esc(x.color)} ${esc(x.variant)}</div><div class="small good">Ricevuto il ${orderDate(o.deliveredAt)}</div></div><b>+${o.quantity} ${esc(x.unit)}</b></div>`}).join(''):'<p class="muted small">Nessuna consegna ancora registrata.</p>'}</div></details>
+ <div class="row wrap" style="margin-top:14px"><button class="mini" onclick="exportPurchaseOrdersCsv()">⬇ Esporta registro ordini CSV</button></div></section>`;
+}
+function exportPurchaseOrdersCsv(){
+ const rows=[['Data ordine','Categoria','Sottocategoria','Materiale','Colore','Variante','Quantità','Unità','Stato','Data consegna','Riferimento']];
+ for(const o of db.purchaseOrders){const x=orderLabel(o);rows.push([orderDate(o.createdAt),x.cat,x.sub,x.name,x.color,x.variant,o.quantity,x.unit,o.status,orderDate(o.deliveredAt),o.note||''])}
+ const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const csv='\ufeff'+rows.map(r=>r.map(q).join(';')).join('\r\n');
+ const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='registro_ordini_beta.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)
+}
+// Le categorie restano apribili singolarmente; ricerca e quantità persistono quando si aggiorna la vista.
+const serviceExpanded=new Set();
+let serviceSearch='',serviceReference='';
+function serviceCategoryToggle(cat){
+ if(serviceExpanded.has(cat))serviceExpanded.delete(cat);
+ else serviceExpanded.add(cat);
+ render();
+}
+function serviceUpdateSearch(el){
+ const caret=el.selectionStart;
+ serviceSearch=el.value;
+ render();
+ const input=$('serviceSearch');
+ if(input){input.focus();input.setSelectionRange(caret,caret)}
+}
+function cartSet(id,value){
+ const x=db.materials.find(m=>m.id===id);
+ if(!x)return;
+ const n=Math.max(0,Math.floor(Number(value)||0));
+ serviceCart[id]=n;
+ serviceExpanded.add(x.cat);
+ render();
+}
+function service(){
+ const matches=db.materials.filter(x=>[x.cat,x.sub,x.name,x.color,x.variant].join(' ').toLocaleLowerCase('it').includes(serviceSearch.trim().toLocaleLowerCase('it')));
+ const cats=catsFor(matches),selected=Object.entries(serviceCart).filter(([id,n])=>n>0),total=selected.reduce((sum,[id,n])=>sum+n,0);
+ const groups=cats.map(cat=>{
+  const items=matches.filter(x=>sameName(x.cat,cat));
+  const nSelected=items.reduce((n,x)=>n+(serviceCart[x.id]||0),0);
+  const open=serviceSearch.trim()?true:serviceExpanded.has(cat);
+  const subcats=uniqueLabels(items.map(x=>x.sub||'Generale'));
+  return `<div class="accordion service-category">
+   <button type="button" class="accbtn" aria-expanded="${open}" onclick="serviceCategoryToggle(decodeURIComponent('${encodeURIComponent(cat).replace(/'/g,'%27')}'))">
+    <span>${open?'▾':'▸'} <b>${esc(cat)}</b></span>
+    <span class="accmeta service-count">${items.length} varianti${nSelected?' · '+nSelected+' selezionati':''}</span>
+   </button>
+   ${open?`<div class="accbody">${subcats.map(sub=>{
+    const rows=items.filter(x=>sameName(x.sub||'Generale',sub)).sort(sortm);
+    return `<div class="service-subheading">${esc(sub)}</div>${rows.map(x=>`<div class="service-product" data-material-id="${esc(x.id)}">
+      <div class="service-product-label"><b>${esc(x.name)}</b><span class="service-product-meta">${esc(x.color||'Senza colore')} · ${esc(x.variant||'Standard')}</span></div>
+      <div class="service-product-quantity"><span class="service-amount">${x.qty}<br>${esc(x.unit||'pz')} disp.</span><input type="number" min="0" step="1" max="${x.qty}" aria-label="Quantità da scaricare: ${esc(x.name)} ${esc(x.color)} ${esc(x.variant)}" value="${serviceCart[x.id]||0}" onchange="cartSet('${x.id}',this.value)"></div>
+     </div>`).join('')}`;
+   }).join('')}</div>`:''}
+  </div>`;
+ }).join('');
+ return `<section class="section"><h2>Scarico rapido per servizio</h2>
+ <p class="muted small">Apri una categoria e scegli le quantità. I materiali e le varianti sono in ordine alfabetico; puoi scaricare più articoli nello stesso servizio.</p>
+ <label for="serviceName">Riferimento servizio (facoltativo)</label><input id="serviceName" placeholder="Es. Servizio 24 ottobre" value="${esc(serviceReference)}" oninput="serviceReference=this.value">
+ <div class="service-search"><label for="serviceSearch">Cerca un materiale o una variante</label><input id="serviceSearch" placeholder="🔎 Cerca in tutte le categorie..." value="${esc(serviceSearch)}" oninput="serviceUpdateSearch(this)"></div>
+ <div class="service-categories">${groups||'<div class="empty">Nessun materiale trovato.</div>'}</div>
+ <div class="row wrap service-summary"><b>${total} ${total===1?'unità selezionata':'unità selezionate'} · ${selected.length} ${selected.length===1?'variante':'varianti'}</b><button class="primary" onclick="commitService()" ${total>0?'':'disabled'}>Conferma scarico</button></div>
+ </section>`;
+}
+function commitService(){const lines=Object.entries(serviceCart).filter(([id,n])=>n>0).map(([id,n])=>({x:db.materials.find(x=>x.id===id),n}));if(!lines.length)return notify('Seleziona almeno un materiale');if(lines.some(({x,n})=>!x||n>x.qty))return notify('Quantità superiore alla giacenza disponibile');const name=$('serviceName')?.value.trim()||'Servizio senza nome';if(!confirm(`Scaricare ${lines.reduce((a,z)=>a+z.n,0)} unità per "${name}"?`))return;lines.forEach(({x,n})=>x.qty-=n);db.history.unshift({id:'h'+Date.now(),date:new Date().toISOString().slice(0,10),service:name,lines:lines.map(({x,n})=>({id:x.id,name:x.name+(x.color?' · '+x.color:''),qty:n}))});serviceCart={};serviceReference='';save();notify('Scarico registrato nello storico')}
+// Mese selezionabile oppure intero storico; stessa selezione per classifiche e movimenti.
+let statsMode='all',statsMonth=new Date().toLocaleDateString('sv-SE').slice(0,7);
+function changeStatsMode(mode){statsMode=mode==='month'?'month':'all';render()}
+function changeStatsMonth(value){if(/^\d{4}-\d{2}$/.test(value)){statsMonth=value;statsMode='month';render()}}
+function historyForStats(){return statsMode==='month'?db.history.filter(h=>String(h.date||'').slice(0,7)===statsMonth):db.history.slice()}
+function usage(history){
+ const map=new Map();
+ for(const h of history)for(const l of h.lines||[]){
+  const current=map.get(l.id)||{id:l.id,name:l.name,qty:0,services:0};
+  current.qty+=Number(l.qty)||0;current.services++;
+  map.set(l.id,current);
+ }
+ // La classifica mantiene l'ordine per quantità; a parità di consumo applica l'alfabeto.
+ return [...map.values()].sort((a,b)=>b.qty-a.qty||alpha(a.name,b.name));
+}
+function analytics(){
+ const history=historyForStats().slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||alpha(a.service||'',b.service||''));
+ const ranked=usage(history),max=Math.max(1,...ranked.map(x=>x.qty));
+ const totalItems=history.reduce((sum,h)=>sum+(h.lines||[]).reduce((n,l)=>n+(Number(l.qty)||0),0),0);
+ const formattedMonth=/^\d{4}-\d{2}$/.test(statsMonth)?new Date(Number(statsMonth.slice(0,4)),Number(statsMonth.slice(5,7))-1,1).toLocaleDateString('it-IT',{month:'long',year:'numeric'}):statsMonth;
+ return `<section class="section"><h2>Periodo delle statistiche</h2>
+ <p class="muted small">Visualizza i consumi di uno specifico mese oppure di tutto lo storico, inclusi i servizi registrati in precedenza.</p>
+ <div class="stats-period" role="group" aria-label="Selezione periodo">
+ <button type="button" class="${statsMode==='all'?'active':''}" aria-pressed="${statsMode==='all'}" onclick="changeStatsMode('all')">📊 Periodo totale</button>
+ <button type="button" class="${statsMode==='month'?'active':''}" aria-pressed="${statsMode==='month'}" onclick="changeStatsMode('month')">📅 Mese specifico</button></div>
+ ${statsMode==='month'?`<div class="stats-month-select"><label for="statsMonth">Seleziona il mese</label><input type="month" id="statsMonth" value="${statsMonth}" onchange="changeStatsMonth(this.value)"></div>`:''}
+ <div class="stats-overview"><span class="tag">${statsMode==='all'?'Tutto il periodo':esc(formattedMonth)}</span><span class="tag">${history.length} servizi registrati</span><span class="tag">${totalItems} unità utilizzate</span></div>
+ </section>
+ <div class="twocol"><section class="section"><h2>Materiali più utilizzati</h2><p class="muted small">Classifica per quantità utilizzata nel periodo selezionato, senza dati degli operatori. A parità di quantità, ordine alfabetico.</p>
+ ${ranked.length?ranked.map((x,i)=>`<div class="orderline"><div class="row"><span><b>${i+1}. ${esc(x.name)}</b></span><span class="pill">${x.qty} utilizzati</span></div><div class="bar"><div style="width:${100*x.qty/max}%"></div></div><div class="muted small">Presente in ${x.services} registrazioni di scarico</div></div>`).join(''):'<div class="empty">Nessun consumo registrato nel periodo selezionato.</div>'}
+ </section><section class="section"><h2>Storico consumi</h2><p class="muted small">Servizi del periodo selezionato, dal più recente. I materiali di ciascun servizio sono in ordine alfabetico.</p>
+ ${history.length?history.map(h=>`<div class="accordion"><div class="accbtn"><div><b>${esc(h.service)}</b><div class="muted small">${esc(h.date)}</div></div><span class="tag">${(h.lines||[]).reduce((n,l)=>n+(Number(l.qty)||0),0)} unità</span></div><div class="accbody">${(h.lines||[]).slice().sort((a,b)=>alpha(a.name||'',b.name||'')).map(l=>`<div class="row orderline"><span>${esc(l.name)}</span><b>−${l.qty}</b></div>`).join('')}</div></div>`).join(''):'<div class="empty">Nessun servizio registrato nel periodo selezionato.</div>'}
+ </section></div>`;
+}
+function management(){return `<section class="section"><h2>Gestione materiali</h2><p class="muted small">Aggiungi, modifica o elimina materiali dimostrativi. Le cancellazioni richiedono conferma.</p><button class="primary" onclick="addItem()">+ Aggiungi materiale</button><div class="tablewrap"><table><thead><tr><th>Materiale</th><th>Categoria</th><th>Giacenza</th><th>Azioni</th></tr></thead><tbody>${[...db.materials].sort(sortm).map(x=>`<tr><td>${esc(x.name)}<div class="muted small">${esc(x.color)} ${esc(x.variant)}</div></td><td>${esc(x.cat)}</td><td>${x.qty}</td><td><button class="mini" onclick="editItem('${x.id}')">Modifica</button> <button class="mini" onclick="moveItem('${x.id}')">Sposta</button> <button class="mini dangerbtn" onclick="removeItem('${x.id}')">Elimina</button></td></tr>`).join('')}</tbody></table></div></section><section class="section"><h2>Informazioni beta</h2><p>Questa versione è un prototipo locale con dati dimostrativi. Non richiede account, non legge Firebase e non sincronizza le modifiche tra dispositivi.</p><button onclick="exportData()">⬇ Salva copia dei dati demo</button></section>`}function exportData(){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=url;a.download='padre_pio_beta_dati.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}function exportCsv(){const rows=db.materials.filter(x=>x.qty<x.min).sort((a,b)=>alpha(a.cat,b.cat)||alpha(a.sub,b.sub)||sortm(a,b)).map(x=>[x.cat,x.sub,x.name,x.color,x.variant,x.qty,x.min,db.orders[x.id]||'Da ordinare']);const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv='\ufeff'+[['Categoria','Sottocategoria','Materiale','Colore','Variante','Giacenza','Minimo','Stato'],...rows].map(r=>r.map(q).join(';')).join('\r\n');const a=document.createElement('a'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.href=url;a.download='ordini_beta.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}function render(){if(!$('nav'))return;$('nav').innerHTML=nav();$('main').innerHTML=({inventario:inventory,ordini:orders,servizi:service,statistiche:analytics,gestione:management}[tab])()}
+// Gestione completa di categorie, sottocategorie e materiali della beta.
+db.categories ||= [...new Set(db.materials.map(x=>x.cat))].sort(alpha);
+db.subcategories ||= [...new Set(db.materials.map(x=>JSON.stringify([x.cat,x.sub||'Generale'])))].map(x=>JSON.parse(x));
+function normalizeNames(){reconcileHierarchy()}
+function modal(title,body,submit){
+ const back=document.createElement('div');back.className='modalback';back.innerHTML=`<div class="modalbox" role="dialog" aria-modal="true"><h2>${esc(title)}</h2><form id="betaForm">${body}<div class="modalactions"><button type="button" id="closeModal">Annulla</button><button class="primary" type="submit">Salva</button></div></form></div>`;
+ document.body.appendChild(back);back.querySelector('#closeModal').onclick=()=>back.remove();
+ back.addEventListener('click',e=>{if(e.target===back)back.remove()});
+ back.querySelector('form').onsubmit=e=>{e.preventDefault();if(submit(new FormData(e.target))!==false)back.remove()};
+}
+function field(label,name,value='',type='text'){
+ return `<div><label for="f_${name}">${esc(label)}</label><input id="f_${name}" name="${name}" type="${type}" ${type==='number'?'min="0" step="1"':''} value="${esc(value)}" required></div>`;
+}
+function newCategory(){modal('Nuova categoria',`<div class="fields">${field('Nome categoria','cat')}</div>`,f=>{
+ const cat=String(f.get('cat')).trim().toUpperCase();if(!cat)return false;
+ if(db.categories.some(x=>x.toLowerCase()===cat.toLowerCase())){notify('Categoria già esistente');return false}
+ db.categories.push(cat);normalizeNames();save();notify('Categoria creata');
+})}
+function newSubcategory(){
+ if(!db.categories.length)return notify('Crea prima una categoria');
+ const opts=db.categories.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+ modal('Nuova sottocategoria',`<div class="fields"><div><label>Categoria di appartenenza</label><select name="cat">${opts}</select></div>${field('Nome sottocategoria','sub')}</div>`,f=>{
+ const cat=String(f.get('cat')),sub=String(f.get('sub')).trim();if(!sub)return false;
+ if(db.subcategories.some(x=>x[0]===cat&&x[1].toLowerCase()===sub.toLowerCase())){notify('Sottocategoria già esistente');return false}
+ db.subcategories.push([cat,sub]);save();notify('Sottocategoria creata');
+ })
+}
+function addItem(){
+ if(!db.categories.length)return notify('Crea prima una categoria');
+ const cats=db.categories.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+ modal('Nuovo materiale',`<div class="fields"><div><label>Categoria</label><select name="cat" id="newMatCat">${cats}</select></div><div><label>Sottocategoria</label><select name="sub" id="newMatSub"></select></div>${field('Nome materiale','name')} ${field('Colore','color','')} ${field('Variante','variant','')} ${field('Giacenza iniziale','qty',0,'number')} ${field('Scorta minima','min',3,'number')} ${field('Unità di misura','unit','pz')}</div>`,f=>{
+ const cat=String(f.get('cat')),sub=String(f.get('sub')),name=String(f.get('name')).trim();if(!name)return false;
+ const id='m'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+ db.materials.push({id,cat,sub,name,color:String(f.get('color')),variant:String(f.get('variant')),qty:Math.max(0,Math.floor(Number(f.get('qty'))||0)),min:Math.max(0,Math.floor(Number(f.get('min'))||0)),unit:String(f.get('unit')).trim()||'pz'});
+ reconcileHierarchy();expanded.add(hierarchyKey('category',cat));expanded.add(hierarchyKey('subcategory',cat,sub));expanded.add(hierarchyKey('material',cat,sub,name));save();notify('Nuovo materiale aggiunto');
+ });
+ const catEl=document.getElementById('newMatCat'),subEl=document.getElementById('newMatSub');
+ function updateSubs(){const subs=db.subcategories.filter(x=>x[0]===catEl.value).map(x=>x[1]).sort(alpha);subEl.innerHTML=subs.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')||'<option value="Generale">Generale</option>'}
+ catEl.onchange=updateSubs;updateSubs();
+}
+function management(){
+ return `<section class="section"><h2>Gestione magazzino</h2><p class="muted small">Crea categorie, sottocategorie e materiali. Apri le tendine per vedere ciascun materiale con tutte le sue varianti e per spostarlo o modificarlo.</p><div class="management-actions"><button class="primary" onclick="addItem()">+ Nuovo materiale</button><button onclick="newCategory()">+ Nuova categoria</button><button onclick="newSubcategory()">+ Nuova sottocategoria</button></div><h2>Categorie, materiali e varianti</h2>${hierarchyMarkup(db.materials,'management',true,false)}</section><section class="section"><h2>Backup dimostrativo</h2><button onclick="exportData()">⬇ Esporta dati beta</button></section>`;
+}
+
+// Spostamento materiali: mantiene lo stesso ID e quindi giacenze, ordini e storico.
+function categoryOptions(current=''){
+ const cats=[...new Set([...db.categories,...db.materials.map(x=>x.cat)])].filter(Boolean).sort(alpha);
+ return cats.map(c=>`<option value="${esc(c)}" ${c===current?'selected':''}>${esc(c)}</option>`).join('');
+}
+function setSubcategoryOptions(catEl,subEl,selected=''){
+ const refresh=(preferred='')=>{
+  const cat=catEl.value;
+  const names=[...new Set([...db.subcategories.filter(x=>x[0]===cat).map(x=>x[1]),...db.materials.filter(x=>x.cat===cat).map(x=>x.sub)])].filter(Boolean).sort(alpha);
+  if(!names.length)names.push('Generale');
+  subEl.innerHTML=names.map(n=>`<option value="${esc(n)}" ${n===preferred?'selected':''}>${esc(n)}</option>`).join('');
+ };
+ catEl.addEventListener('change',()=>refresh());
+ refresh(selected);
+}
+function keepHierarchy(cat,sub){
+ if(!db.categories.includes(cat))db.categories.push(cat);
+ if(!db.subcategories.some(x=>x[0]===cat&&x[1]===sub))db.subcategories.push([cat,sub]);
+ normalizeNames();
+}
+function moveItem(id){
+ const x=db.materials.find(m=>m.id===id);if(!x)return;
+ modal('Sposta materiale',`<p class="muted small"><b>${esc(x.name)}</b> · ${esc(x.color)} ${esc(x.variant)}<br>Giacenza conservata: ${x.qty} ${esc(x.unit)}</p><div class="fields"><div><label>Categoria di destinazione</label><select name="cat" id="moveCat">${categoryOptions(x.cat)}</select></div><div><label>Sottocategoria di destinazione</label><select name="sub" id="moveSub"></select></div></div>`,f=>{
+  const cat=String(f.get('cat')),sub=String(f.get('sub'));
+  if(!cat||!sub)return false;
+  if(x.cat===cat&&x.sub===sub){notify('Il materiale è già in questa posizione');return false}
+  x.cat=cat;x.sub=sub;keepHierarchy(cat,sub);
+  expanded.clear();expanded.add(hierarchyKey('category',cat));expanded.add(hierarchyKey('subcategory',cat,sub));expanded.add(hierarchyKey('material',cat,sub,x.name));save();notify('Materiale spostato: '+cat+' / '+sub);
+ });
+ setSubcategoryOptions($('moveCat'),$('moveSub'),x.sub);
+}
+// Sostituisce la vecchia modifica testuale con un modulo completo.
+function editItem(id){
+ const x=db.materials.find(m=>m.id===id);if(!x)return;
+ modal('Modifica materiale',`<div class="fields">
+  <div><label>Categoria</label><select name="cat" id="editCat">${categoryOptions(x.cat)}</select></div>
+  <div><label>Sottocategoria</label><select name="sub" id="editSub"></select></div>
+  ${field('Nome materiale','name',x.name)}
+  <div><label>Colore</label><input name="color" value="${esc(x.color)}"></div>
+  <div><label>Variante</label><input name="variant" value="${esc(x.variant)}"></div>
+  ${field('Giacenza','qty',x.qty,'number')}
+  ${field('Scorta minima','min',x.min,'number')}
+  ${field('Unità di misura','unit',x.unit||'pz')}
+ </div>`,f=>{
+  const name=String(f.get('name')).trim(),cat=String(f.get('cat')),sub=String(f.get('sub'));
+  const qty=Number(f.get('qty')),min=Number(f.get('min'));
+  if(!name||!cat||!sub||!Number.isInteger(qty)||qty<0||!Number.isInteger(min)||min<0){notify('Controlla i dati del materiale');return false}
+  const wasMoved=x.cat!==cat||x.sub!==sub;
+  Object.assign(x,{name,cat,sub,color:String(f.get('color')).trim(),variant:String(f.get('variant')).trim(),qty,min,unit:String(f.get('unit')).trim()||'pz'});
+  keepHierarchy(cat,sub);expanded.clear();expanded.add(hierarchyKey('category',cat));expanded.add(hierarchyKey('subcategory',cat,sub));expanded.add(hierarchyKey('material',cat,sub,name));save();notify(wasMoved?'Materiale modificato e spostato':'Materiale aggiornato');
+ });
+ setSubcategoryOptions($('editCat'),$('editSub'),x.sub);
+}
+
+render();
+</script></body></html>
